@@ -84,3 +84,24 @@ h1 {
 audio {
 	display: none;
 }
+
+/* Add this to your existing styles.css file */
+
+#startButton {
+	background-color: #4caf50; /* Green background */
+	color: white; /* White text */
+	border: none; /* No border */
+	padding: 15px 32px; /* Padding for size */
+	text-align: center; /* Center text */
+	text-decoration: none; /* No underline */
+	display: inline-block; /* Inline block for layout */
+	font-size: 16px; /* Font size */
+	margin: 4px 2px; /* Margin for spacing */
+	cursor: pointer; /* Pointer cursor on hover */
+	border-radius: 8px; /* Rounded corners */
+	transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+#startButton:hover {
+	background-color: #45a049; /* Darker green on hover */
+}

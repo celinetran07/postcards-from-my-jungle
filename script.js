@@ -19,6 +19,7 @@ const phrases = [
 ];
 
 const numberOfSlides = 50;
+const totalAudioFiles = 4; // Update this to the actual number of audio files available
 
 function generateSlides() {
     const slideshow = document.querySelector('.slideshow');
@@ -40,8 +41,9 @@ function generateSlides() {
 
         const audio = document.createElement('audio');
         audio.classList.add('audio');
-        audio.src = `sounds/sound${i}.wav`;
+        audio.src = `sounds/sound${(i - 1) % totalAudioFiles + 1}.wav`; // Loop through available audio files
         audio.loop = true; // Enable looping for each audio track
+        audio.volume = 1; // Set volume to 1 for testing
         slide.appendChild(audio);
 
         slideshow.appendChild(slide);
@@ -75,20 +77,21 @@ function setupAudioLoop(audio) {
 }
 
 function playAudioTracks() {
-    audioElements.forEach((audio, index) => {
-        // Setup looping behavior for each audio track
-        setupAudioLoop(audio);
-        
-        // Stagger the initial start of each track
-        setTimeout(() => {
-            audio.currentTime = 0;
-            audio.volume = 0;
+    audioElements.forEach((audio) => {
+        // Ensure the audio element has a valid source
+        if (audio.src) {
+            // Setup looping behavior for each audio track
+            setupAudioLoop(audio);
             
-            // Start playing and fade in
+            // Start playing all audio tracks at the same time
+            audio.currentTime = 0; // Reset audio to start
+            audio.volume = 0; // Start volume at 0 for fade-in effect
             audio.play().then(() => {
-                fadeInAudio(audio);
+                fadeInAudio(audio); // Fade in audio after starting
             }).catch(e => console.log('Audio playback error:', e));
-        }, index * 1000); // Stagger each track by 1 second
+        } else {
+            console.log('Audio source is not valid:', audio);
+        }
     });
 }
 
@@ -97,7 +100,7 @@ function fadeInAudio(audio) {
     const interval = setInterval(() => {
         if (volume < 1) {
             volume += 0.1;
-            audio.volume = volume;
+            audio.volume = Math.min(volume, 1);
         } else {
             clearInterval(interval);
         }
@@ -111,11 +114,20 @@ function nextSlide() {
 }
 
 function startSlideshow() {
-    showSlide(currentSlide);
-    playAudioTracks(); // Play audio tracks once at the start
+    const startButton = document.getElementById('startButton');
     
-    // Only handle slide transitions, not audio
-    setInterval(nextSlide, slideInterval);
+    // Add an event listener for the button click
+    startButton.addEventListener('click', () => {
+        showSlide(currentSlide);
+        playAudioTracks(); // Play audio tracks once at the start
+        
+        // Only handle slide transitions, not audio
+        setInterval(nextSlide, slideInterval);
+        
+        // Optionally hide the button after starting
+        startButton.style.display = 'none'; // Hide the button after starting
+    });
 }
 
+// Call startSlideshow to set up the button listener
 startSlideshow();
